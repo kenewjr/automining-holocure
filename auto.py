@@ -8,9 +8,7 @@ import time
 def press_space():
     """Simulate pressing the space key using pydirectinput."""
     pydirectinput.press('space')
-    time.sleep(1)  # Add a 1-second delay after pressing space
-
-
+    time.sleep(1)
 
 def get_window_screenshot(window_name: str) -> np.ndarray | None:
     """Capture a screenshot of a specific window by name."""
@@ -53,10 +51,9 @@ def detect_red_bar(frame: np.ndarray) -> tuple[int | None, int | None]:
     roi = frame[roi_y:roi_y + roi_h, roi_x:roi_x + roi_w]
     hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
 
-    # Adjusted thresholds for better red detection
-    lower_red_1 = np.array([0, 100, 50])  # Adjusted lower range
+    lower_red_1 = np.array([0, 100, 50]) 
     upper_red_1 = np.array([10, 255, 255])
-    lower_red_2 = np.array([170, 100, 50])  # Adjusted upper range
+    lower_red_2 = np.array([170, 100, 50]) 
     upper_red_2 = np.array([180, 255, 255])
 
     red_mask = cv2.inRange(hsv_roi, lower_red_1, upper_red_1) + cv2.inRange(hsv_roi, lower_red_2, upper_red_2)
@@ -65,12 +62,11 @@ def detect_red_bar(frame: np.ndarray) -> tuple[int | None, int | None]:
     leftmost_x = float('inf')
     leftmost_rect = None
 
-    # Process contours to find the smallest valid red bar
+
     for contour in contours:
         x, y, w, h = cv2.boundingRect(contour)
 
-        # Skip tiny bars that may be noise
-        if w > 5 and h > 5:  # Minimum size to consider as a red bar
+        if w > 5 and h > 5:
             if x < leftmost_x:
                 leftmost_x = x
                 leftmost_rect = (x, y, w, h)
@@ -81,7 +77,6 @@ def detect_red_bar(frame: np.ndarray) -> tuple[int | None, int | None]:
         bar_end = roi_x + x + w
         return bar_start, bar_end
 
-    # Return None if no valid red bar is found
     return None, None
 
 
@@ -102,7 +97,7 @@ def predict_arrow_position(prev_x: int | None, current_x: int | None, delta_time
     if prev_x is None or current_x is None or delta_time <= 0:
         return current_x
     velocity = (current_x - prev_x) / delta_time
-    return int(current_x + velocity * 0.05)  # Predict slightly ahead
+    return int(current_x + velocity * 0.05) 
 
 
 def main():
